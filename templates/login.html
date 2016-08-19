@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block body %}
+{% if error %}
+<span style="color: red">Error: {{ error }}</span><p>
+{% end %}
+
+<div id="div1">Email: <input id="user" type="text"><br>
+Password: <input id="password" type="password"><br>
+<button id="login">login</button>
+</div>
+
+{% end %}
