@@ -19,6 +19,7 @@ import concurrent.futures
 import MySQLdb
 import os.path
 import subprocess
+import pymongo
 import torndb
 import tornado.escape
 import tornado.httpserver
@@ -34,10 +35,9 @@ sys.path.append("../../")
 
 
 define("port", default=8887, help="run on the given port", type=int)
-define("mysql_host", default="127.0.0.1:3306", help="blog database host")
-define("mysql_database", default="blog", help="blog database name")
-define("mysql_user", default="blog", help="blog database user")
-define("mysql_password", default="blog", help="blog database password")
+define("mongo_host", default="localhost", help="blog mongodb host")
+define("mongo_port", default=27017, help="blog mongodb port")
+define("mongo_database", default="summer", help="blog database")
 
 
 # A thread pool to be used for password hashing with bcrypt.
@@ -53,8 +53,6 @@ def main():
         if isinstance(url, tornado.web.URLSpec):
             if url.name == "login":
                 routes.append((r"/", url.handler_class))
-            if url.name == "register":
-                routes.append((r"/register", url.handler_class))
 
     print("Routes\n======\n\n" + json.dumps(
         [(url, repr(rh)) for url, rh in routes],
@@ -62,7 +60,7 @@ def main():
     )
 
     settings = dict(
-        blog_title=u"Tornado Blog",
+        blog_title=u"Summer Tornado Blog",
         template_path=os.path.join(os.path.dirname(__file__), "templates"),
         static_path=os.path.join(os.path.dirname(__file__), "static"),
         ui_modules={"Entry": EntryModule},
@@ -70,12 +68,12 @@ def main():
         cookie_secret="__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__",
         login_url="/auth/login",
         debug=True,
+        collection="blog",
     )
 
     # Have one global connection to the blog DB across all handlers
-    db = torndb.Connection(
-        host=options.mysql_host, database=options.mysql_database,
-        user=options.mysql_user, password=options.mysql_password)
+    client = pymongo.MongoClient(options.mongo_host, options.mongo_port)
+    db = client[options.mongo_database]
 
     application = Application(routes, db_conn=db, generate_docs=True, settings=settings)
     http_server = tornado.httpserver.HTTPServer(application)

@@ -5,9 +5,19 @@
 <span style="color: red">Error: {{ error }}</span><p>
 {% end %}
 
-<div id="div1">Email: <input id="user" type="text"><br>
-Password: <input id="password" type="password"><br>
-<button id="login">login</button>
+<div id="div1">
+    Username: <input id="user" type="text"><br>
+    Password: <input id="password" type="password"><br>
+    <button id="login" onclick="login()">login</button>&nbsp;&nbsp;
+    <a id = "into_register" href="javascript:void(0)" onclick="into_toggle()">register</a>
+</div>
+
+<div id="div2">
+    Username: <input id="r_user" type="text"><br>
+    Password: <input id="r_password_1" type="password"><br>
+    Password_confirm: <input id="r_password_2" type="password"><br>
+    <button id="register" onclick="register()">register</button>&nbsp;&nbsp;
+    <a id = "into_register" href="javascript:void(0)" onclick="into_toggle()">login</a>
 </div>
 
 {% end %}

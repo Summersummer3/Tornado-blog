@@ -7,31 +7,79 @@
     <link rel="alternate" href="/feed" type="application/atom+xml" title="{{ escape(handler.settings["blog_title"]) }}">
     <script src="{{ static_url("jquery-3.1.0.js")}}}"></script>
     <script>
-    $(document).ready(function(){
-        $("#login").click(function(){
-            var username = $("#user").val();
-            var password = $("#password").val();
+        $(document).ready(function(){
+            $("#div2").hide();
+        });
+
+        function login(){
+                var username = $("#user").val();
+                var password = $("#password").val();
+
+                var settings = {
+                    type: "POST",
+                    url:  "api/login",
+                    contentType: "application/json",
+                    data:JSON.stringify({
+                        "username": username,
+                        "password": password
+                    }),
+                    dataType:"json",
+
+                    statusCode: {
+                        400: function(data, textStatus) {
+                            alert (textStatus);
+                        },
+                        200: function(data,textStatus) {
+                            alert (data.data.message + " "+textStatus);
+                            $("#div1").slideUp("slow");
+                        }
+                    },
+                    jsonpCallback: "localJsonpCallback"
+                };
+                $.ajax(settings);
+            }
+
+        function localJsonpCallback(json) {
+            alert(json.Message);
+        }
+
+        function into_toggle(){
+            $("#div1").toggle();
+            $("#div2").toggle();
+            return false;
+        }
+
+        function register(){
+            var username = $("#r_user").val();
+            var password_1 = $("#r_password_1").val();
+            var password_2 = $("#r_password_2").val();
+
+            if(password_1 != password_2){
+                alert("password is not identical");
+                return false;
+            }
 
             var settings = {
-                type: "POST",
-                url:  "api/login",
-                contentType: "application/json",
-                data:JSON.stringify({
-                    "username": username,
-                    "password": password
-                }),
-                dataType:"json",
+                    type: "POST",
+                    url:  "api/register",
+                    contentType: "application/json",
+                    data:JSON.stringify({
+                        "username": username,
+                        "password": password_1
+                    }),
+                    dataType:"json",
 
-                error: function(XHR,textStatus,errorThrown) {
-                    alert ("XHR="+XHR+"\ntextStatus="+textStatus+"\nerrorThrown=" + errorThrown);
-                },
-                success: function(data,textStatus) {
-                    $("#div1").slideUp("slow")
-                }
-            };
-            $.ajax(settings);
-        });
-    });
+                    error: function(XHR,textStatus,errorThrown) {
+                        alert ("XHR="+XHR+"\ntextStatus="+textStatus+"\nerrorThrown=" + errorThrown);
+                    },
+                    success: function(data,textStatus) {
+                        alert (data.message);
+                        $("#div2").slideUp("slow")
+                    }
+                };
+            $.ajax(settings)
+        }
+
     </script>
 
     {% block head %}{% end %}
@@ -39,14 +87,14 @@
   <body>
     <div id="body">
       <div id="header">
-        <div style="float:right">
-          {% if current_user %}
-            <a href="/compose">{{ _("New post") }}</a> -
-            <a href="/auth/logout?next={{ url_escape(request.uri) }}">{{ _("Sign out") }}</a>
-          {% else %}
-            {% raw _('<a href="%(url)s">Sign in</a> to compose/edit') % {"url": "/auth/login?next=" + url_escape(request.uri)} %}
-          {% end %}
-        </div>
+{#        <div style="float:right">#}
+{#          {% if current_user %}#}
+{#            <a href="/compose">{{ _("New post") }}</a> -#}
+{#            <a href="/auth/logout?next={{ url_escape(request.uri) }}">{{ _("Sign out") }}</a>#}
+{#          {% else %}#}
+{#            {% raw _('<a href="%(url)s">Sign in</a> to compose/edit') % {"url": "/auth/login?next=" + url_escape(request.uri)} %}#}
+{#          {% end %}#}
+{#        </div>#}
         <h1><a href="/">{{ escape(handler.settings["blog_title"]) }}</a></h1>
       </div>
       <div id="content">{% block body %}{% end %}</div>

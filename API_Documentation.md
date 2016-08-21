@@ -28,8 +28,8 @@
 **Input Example**
 ```json
 {
-    "body": "12345",
-    "title": "abc"
+    "password": "12345",
+    "username": "abc"
 }
 ```
 
@@ -51,6 +51,64 @@
 ```json
 {
     "message": "login success"
+}
+```
+
+
+
+
+<br>
+<br>
+
+# /api/register/?
+
+    Content-Type: application/json
+
+## POST
+
+
+**Input Schema**
+```json
+{
+    "properties": {
+        "password": {
+            "type": "string"
+        },
+        "username": {
+            "type": "string"
+        }
+    },
+    "type": "object"
+}
+```
+
+
+**Input Example**
+```json
+{
+    "password": "12345",
+    "username": "abc"
+}
+```
+
+
+**Output Schema**
+```json
+{
+    "properties": {
+        "message": {
+            "type": "string"
+        }
+    },
+    "type": "object"
+}
+```
+
+
+**Output Example**
+```json
+{
+    "message": "register success"
 }
 ```
 
