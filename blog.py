@@ -14,13 +14,11 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import logging
 import json
 import concurrent.futures
-import MySQLdb
 import os.path
-import subprocess
 import pymongo
-import torndb
 import tornado.escape
 import tornado.httpserver
 import tornado.ioloop
@@ -47,6 +45,7 @@ URL_PREFIX = ''
 
 
 def main():
+    options.parse_command_line()
     import handlers
     routes = get_routes(handlers)
     for url in tornado_routes.make_handlers("", (r'/', tornado_routes.include('views'))):
@@ -54,7 +53,7 @@ def main():
             if url.name == "login":
                 routes.append((r"/", url.handler_class))
 
-    print("Routes\n======\n\n" + json.dumps(
+    logging.info("Routes\n======\n\n" + json.dumps(
         [(url, repr(rh)) for url, rh in routes],
         indent=2)
     )

@@ -24,24 +24,18 @@
                         "password": password
                     }),
                     dataType:"json",
-
-                    statusCode: {
-                        400: function(data, textStatus) {
-                            alert (textStatus);
-                        },
-                        200: function(data,textStatus) {
-                            alert (data.data.message + " "+textStatus);
-                            $("#div1").slideUp("slow");
-                        }
+                    error: function(XHR,textStatus,errorThrown) {
+                        alert ("error message="+JSON.parse(XHR.responseText)["data"]+"\ntextStatus="+textStatus+"\nerrorThrown=" + errorThrown);
                     },
-                    jsonpCallback: "localJsonpCallback"
+
+                    success: function(data,textStatus) {
+                        alert (data.data.message + " "+textStatus);
+                        $("#div1").slideUp("slow");
+                    },
                 };
                 $.ajax(settings);
             }
 
-        function localJsonpCallback(json) {
-            alert(json.Message);
-        }
 
         function into_toggle(){
             $("#div1").toggle();

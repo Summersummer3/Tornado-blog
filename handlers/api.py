@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 # __author__ = 'summer'
 
-import httplib
+
 from tornado_json.requesthandlers import APIHandler, ViewHandler
-from tornado_json import schema
+from tornado_json import schema,exceptions
 
 
 class LoginHandler(APIHandler):
@@ -33,14 +33,11 @@ class LoginHandler(APIHandler):
         res = self.db_conn[self.settings["collection"]].find_one({"username": self.body["username"],
                                                                   "password": self.body["password"]})
         if res is None:
-            self.set_status(httplib.BAD_REQUEST)
-            return {
-                "message": "bad request"
-            }
-
+            exceptions.api_assert(False, 400, "not such user")
         else:
+            message = "{} login success.".format(self.body["username"])
             return {
-                "message": "{} login success.".format(self.body["username"])
+                "message": message
             }
 
 class RegisterHandler(APIHandler):
